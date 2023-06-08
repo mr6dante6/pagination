@@ -1,0 +1,76 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic Page Needs -->
+    <meta charset="utf-8">
+    <title>Title</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- FONT -->
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'css/skeleton.css' %}">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <table class="u-full-width">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Street</th>
+                <th>District</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for station in bus_stations %}
+                <tr>
+                    <td>{{ station.Name }}</td>
+                    <td>{{ station.Street }}</td>
+                    <td>{{ station.District }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            {% if bus_stations.has_previous %}
+                <a class="button button-primary" href="?page={{ bus_stations.previous_page_number }}">⟵</a>
+                {% if bus_stations.number > 2 %}
+                    <a class="button button-primary" href="?page=1">1</a>
+                {% endif %}
+            {% endif %}
+
+            {% for page_num in bus_stations.paginator.page_range %}
+                {% if page_num >= bus_stations.number|add:-2 and page_num <= bus_stations.number|add:2 %}
+                    {% if page_num == bus_stations.number %}
+                        <a class="button disabled" href="?page={{ page_num }}">{{ page_num }}</a>
+                    {% else %}
+                        <a class="button button-primary" href="?page={{ page_num }}">{{ page_num }}</a>
+                    {% endif %}
+                {% elif page_num == bus_stations.number|add:3 and bus_stations.paginator.num_pages > 5 %}
+                    <span class="dots">...</span>
+                {% elif page_num == bus_stations.number|add:-3 and bus_stations.number > 3 %}
+                    <span class="dots">...</span>
+                {% endif %}
+            {% endfor %}
+
+            {% if bus_stations.has_next %}
+                {% if bus_stations.number < bus_stations.paginator.num_pages %}
+                    <a class="button button-primary" href="?page={{ bus_stations.paginator.num_pages }}">{{ bus_stations.paginator.num_pages }}</a>
+                {% endif %}
+                <a class="button button-primary" href="?page={{ bus_stations.next_page_number }}">⟶</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+</body>
+</html>
